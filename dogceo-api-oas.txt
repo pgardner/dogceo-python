@@ -1,0 +1,426 @@
+openapi: 3.0.3
+info:
+  title: Dog CEO API
+  description: |
+    A public API all about dogs, featuring dog breeds, sub-breeds, and random dog images.
+    This API provides access to a large collection of dog images categorized by breed and sub-breed.
+  version: '1.0.0'
+  contact:
+    name: Dog CEO API Team
+    url: https://dog.ceo/dog-api/
+  license:
+    name: MIT License
+    url: https://dog.ceo/dog-api/about
+servers:
+  - url: https://dog.ceo/api
+    description: Production server
+tags:
+  - name: breeds
+    description: Operations related to dog breeds
+  - name: images
+    description: Operations related to dog images
+paths:
+  /breeds/list/all:
+    get:
+      summary: Get all breeds
+      description: Returns a list of all dog breeds and their sub-breeds
+      tags:
+        - breeds
+      operationId: getAllBreeds
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AllBreedsResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /breeds/list:
+    get:
+      summary: Get primary breeds
+      description: Returns a list of all dog breeds without sub-breeds
+      tags:
+        - breeds
+      operationId: getPrimaryBreeds
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrimaryBreedsResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /breed/{breed}/list:
+    get:
+      summary: Get sub-breeds
+      description: Returns a list of all sub-breeds for a specific breed
+      tags:
+        - breeds
+      operationId: getSubBreeds
+      parameters:
+        - name: breed
+          in: path
+          description: The breed name
+          required: true
+          schema:
+            type: string
+            example: hound
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubBreedsResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /breeds/image/random:
+    get:
+      summary: Get random image
+      description: Returns a random dog image from any breed
+      tags:
+        - images
+      operationId: getRandomImage
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RandomImageResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /breeds/image/random/{count}:
+    get:
+      summary: Get multiple random images
+      description: Returns multiple random dog images from any breed
+      tags:
+        - images
+      operationId: getMultipleRandomImages
+      parameters:
+        - name: count
+          in: path
+          description: Number of images to return (1-50)
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 1
+            example: 3
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultipleRandomImagesResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /breed/{breed}/images:
+    get:
+      summary: Get all images for a breed
+      description: Returns an array of all images for a specific breed
+      tags:
+        - images
+      operationId: getBreedImages
+      parameters:
+        - name: breed
+          in: path
+          description: The breed name
+          required: true
+          schema:
+            type: string
+            example: boxer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BreedImagesResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /breed/{breed}/images/random:
+    get:
+      summary: Get random image for a breed
+      description: Returns a random dog image from a specific breed
+      tags:
+        - images
+      operationId: getRandomBreedImage
+      parameters:
+        - name: breed
+          in: path
+          description: The breed name
+          required: true
+          schema:
+            type: string
+            example: labrador
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RandomImageResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /breed/{breed}/images/random/{count}:
+    get:
+      summary: Get multiple random images for a breed
+      description: Returns multiple random dog images from a specific breed
+      tags:
+        - images
+      operationId: getMultipleRandomBreedImages
+      parameters:
+        - name: breed
+          in: path
+          description: The breed name
+          required: true
+          schema:
+            type: string
+            example: boxer
+        - name: count
+          in: path
+          description: Number of images to return (1-50)
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 1
+            example: 3
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultipleRandomImagesResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /breed/{breed}/{subBreed}/images:
+    get:
+      summary: Get all images for a sub-breed
+      description: Returns an array of all images for a specific sub-breed
+      tags:
+        - images
+      operationId: getSubBreedImages
+      parameters:
+        - name: breed
+          in: path
+          description: The breed name
+          required: true
+          schema:
+            type: string
+            example: hound
+        - name: subBreed
+          in: path
+          description: The sub-breed name
+          required: true
+          schema:
+            type: string
+            example: afghan
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BreedImagesResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /breed/{breed}/{subBreed}/images/random:
+    get:
+      summary: Get random image for a sub-breed
+      description: Returns a random dog image from a specific sub-breed
+      tags:
+        - images
+      operationId: getRandomSubBreedImage
+      parameters:
+        - name: breed
+          in: path
+          description: The breed name
+          required: true
+          schema:
+            type: string
+            example: hound
+        - name: subBreed
+          in: path
+          description: The sub-breed name
+          required: true
+          schema:
+            type: string
+            example: afghan
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RandomImageResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /breed/{breed}/{subBreed}/images/random/{count}:
+    get:
+      summary: Get multiple random images for a sub-breed
+      description: Returns multiple random dog images from a specific sub-breed
+      tags:
+        - images
+      operationId: getMultipleRandomSubBreedImages
+      parameters:
+        - name: breed
+          in: path
+          description: The breed name
+          required: true
+          schema:
+            type: string
+            example: hound
+        - name: subBreed
+          in: path
+          description: The sub-breed name
+          required: true
+          schema:
+            type: string
+            example: afghan
+        - name: count
+          in: path
+          description: Number of images to return (1-50)
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 1
+            example: 3
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MultipleRandomImagesResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  schemas:
+    AllBreedsResponse:
+      type: object
+      properties:
+        message:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              type: string
+          example:
+            terrier: [american, australian, bedlington]
+            hound: [afghan, basset, blood]
+        status:
+          type: string
+          example: success
+    PrimaryBreedsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            type: string
+          example: [affenpinscher, african, airedale, akita]
+        status:
+          type: string
+          example: success
+    SubBreedsResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            type: string
+          example: [afghan, basset, blood, english, ibizan, plott, walker]
+        status:
+          type: string
+          example: success
+    RandomImageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: https://images.dog.ceo/breeds/hound-afghan/n02088094_1003.jpg
+        status:
+          type: string
+          example: success
+    MultipleRandomImagesResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            type: string
+          example:
+            - https://images.dog.ceo/breeds/hound-afghan/n02088094_1003.jpg
+            - https://images.dog.ceo/breeds/hound-afghan/n02088094_10263.jpg
+            - https://images.dog.ceo/breeds/hound-afghan/n02088094_10715.jpg
+        status:
+          type: string
+          example: success
+    BreedImagesResponse:
+      type: object
+      properties:
+        message:
+          type: array
+          items:
+            type: string
+          example:
+            - https://images.dog.ceo/breeds/hound-afghan/n02088094_1003.jpg
+            - https://images.dog.ceo/breeds/hound-afghan/n02088094_10263.jpg
+            - https://images.dog.ceo/breeds/hound-afghan/n02088094_10715.jpg
+        status:
+          type: string
+          example: success
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: No route found for "GET /api/breeeds/list"
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
